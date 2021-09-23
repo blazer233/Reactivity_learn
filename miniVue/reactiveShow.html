@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script type="module">
+      import { reactive } from "./reactive.js";
+      import { effect } from "./effect.js";
+      import { ref } from "./ref.js";
+      const observed = (window.observed = reactive({
+        count: 0
+      }));
+      const observed1 = (window.observed1 = reactive([1, 2, 3]));
+
+      effect(() => {
+        console.log("observed.count is:", observed.count);
+      });
+
+      effect(() => {
+        console.log(
+          `observed1  length is: ${observed1.length} , 4 is:${observed1[4]}`
+        );
+      });
+
+      const observed2 = (window.observed2 = reactive({
+        count1: 0,
+        count2: 10
+      }));
+
+      effect(() => {
+        effect(() => {
+          console.log("observed2 count2 is:", observed2.count2);
+        });
+        console.log("observed2 count1 is:", observed2.count1);
+      });
+
+      const foo = (window.foo = ref(1));
+      effect(() => {
+        console.log("foo: ", foo.value);
+      });
+
+      const calculate = (window.calculate = computed(() => {
+        //缓存计算的值，惰性计算
+        console.log("calculate c.value", foo.value * 2);
+        return foo.value * 2;
+      }));
+
+      const computed = (window.computed = computed({
+        get() {
+          return foo.value * 2;
+        },
+        set(newVal) {
+          foo.value = newVal;
+        }
+      }));
+    </script>
+  </body>
+</html>
