@@ -15,11 +15,8 @@ let activeEffect;
 
 export function effect(fn) {
   const effectFn = () => {
-    try {
-      activeEffect = effectFn; //全局变量记录当前正在执行的副作用函数
-      return fn();
-    } finally {
-    }
+    activeEffect = effectFn; //全局变量记录当前正在执行的副作用函数
+    return fn();
   };
   effectFn();
   return effectFn;

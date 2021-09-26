@@ -16,9 +16,10 @@
       }));
       const observed1 = (window.observed1 = reactive([1, 2, 3]));
 
-      effect(() => {
+      let effectName = effect(() => {
         console.log("observed.count is:", observed.count);
       });
+      console.log(effectName);
 
       effect(() => {
         console.log(

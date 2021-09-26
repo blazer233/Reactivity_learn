@@ -49,20 +49,6 @@ function watchEffect(effect) {
   activeEffect = null;
 }
 
-// proxy version
-const reactiveHandlers = {
-  get(target, key) {
-    const value = getDep(target, key).value;
-    if (value && typeof value === "object") {
-      return reactive(value);
-    } else {
-      return value;
-    }
-  },
-  set(target, key, value) {
-    getDep(target, key).value = value;
-  }
-};
 
 const targetToHashMap = new WeakMap();
 
@@ -83,7 +69,19 @@ function getDep(target, key) {
 }
 
 function reactive(obj) {
-  return new Proxy(obj, reactiveHandlers);
+  return new Proxy(obj, {
+    get(target, key) {
+      const value = getDep(target, key).value;
+      if (value && typeof value === "object") {
+        return reactive(value);
+      } else {
+        return value;
+      }
+    },
+    set(target, key, value) {
+      getDep(target, key).value = value;
+    }
+  };);
 }
 
 const state = reactive({
