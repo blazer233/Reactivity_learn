@@ -49,7 +49,6 @@ function watchEffect(effect) {
   activeEffect = null;
 }
 
-
 const targetToHashMap = new WeakMap();
 
 function getDep(target, key) {
@@ -81,7 +80,7 @@ function reactive(obj) {
     set(target, key, value) {
       getDep(target, key).value = value;
     }
-  };);
+  });
 }
 
 const state = reactive({
