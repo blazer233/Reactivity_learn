@@ -7,19 +7,42 @@ const targetMap = new WeakMap(); //依赖和副作用建立关系
  *
  * {
  *    [target]:{
- *      [key]:new Set()
+ *      [key]:new Set() [effect1,effect2...]
  *    }
  * }
+ * 
+ * 
+ * const logCount = () => console.log(observed.count)
+ * 
+    function effect(fn) {
+      const wrapped = () => {
+        activeEffect = fn
+        fn()
+      }
+      return wrapped
+    }
+
+
+    const wrappedLog = wrapper(logCount)
+    wrappedLog()
+
+    logCount函数打印observed.count的值，通过包装，将logCount函数赋给activeEffect
+    track时activeEffect被收集到key对应的Set中，当对象的key改变时再次触发activeEffect
+    即触发logCount
+ * 
  */
 let activeEffect;
-
 export function effect(fn) {
-  const effectFn = () => {
-    activeEffect = effectFn; //全局变量记录当前正在执行的副作用函数
-    return fn();
+  const reactiveEffect = () => {
+    try {
+      activeEffect = reactiveEffect; //全局变量记录当前正在执行的用户副作用函数
+      return fn();
+    } finally {
+      activeEffect = undefined;
+    }
   };
-  effectFn();
-  return effectFn;
+  reactiveEffect();
+  return reactiveEffect;
 }
 /**
  *
@@ -43,7 +66,7 @@ export function trigger(target, key) {
   if (!depsMap) return;
   const deps = depsMap.get(key);
   if (!deps) return;
-  deps.forEach(effectFn => {
-    effectFn();
+  deps.forEach(reactiveEffect => {
+    reactiveEffect(); //触发更新时，寻找对应的effect执行
   });
 }

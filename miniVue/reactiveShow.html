@@ -11,15 +11,14 @@
       import { reactive } from "./reactive.js";
       import { effect } from "./effect.js";
       import { ref } from "./ref.js";
+      import { computed } from "./computed.js";
       const observed = (window.observed = reactive({
         count: 0
       }));
       const observed1 = (window.observed1 = reactive([1, 2, 3]));
-
-      let effectName = effect(() => {
+      effect(() => {
         console.log("observed.count is:", observed.count);
       });
-      console.log(effectName);
 
       effect(() => {
         console.log(
@@ -50,14 +49,14 @@
         return foo.value * 2;
       }));
 
-      const computed = (window.computed = computed({
-        get() {
-          return foo.value * 2;
-        },
-        set(newVal) {
-          foo.value = newVal;
-        }
-      }));
+      // const computed = (window.computed = computed({
+      //   get() {
+      //     return foo.value * 2;
+      //   },
+      //   set(newVal) {
+      //     foo.value = newVal;
+      //   }
+      // }));
     </script>
   </body>
 </html>

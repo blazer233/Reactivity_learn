@@ -1,5 +1,5 @@
 import { isFunction } from "./tools.js";
-import { effect, track, trigger } from "./effect";
+import { effect, track, trigger } from "./effect.js";
 
 export function computed(getterOrOption) {
   let getter, setter;
@@ -20,22 +20,23 @@ class ComputedImpl {
     this._dirty = true; //依赖是否更新
     this.effect = effect(getter, {
       lazy: true,
+      //调度机制
       scheduler: () => {
         if (!this._dirty) {
           this._dirty = true;
           trigger(this, "value");
         }
       }
-    });
+    }); //初始化effect
   }
 
   get value() {
     if (this._dirty) {
-      this._value = this.effect();
-      this._dirty = false;
+      this._value = this.effect(); //做getters
+      this._dirty = false; //再取时不用进行计算
       track(this, "value");
     }
-    return this._value;
+    return this._value; //返回值
   }
 
   set value(newValue) {

@@ -7,8 +7,7 @@ const proxyMap = new WeakMap();
  *  2、重复代理 let tmp = reactive(obj) , tmp1 = reactive(obj)
  *  3、确认发生改变时 tmp.count = 10 tmp.count = 10 (再次赋值不会触发)
  *  4、深层对象依赖收集
- *  5、数组
- *  6、嵌套effect
+ *  5、数组//length属性也是需要依赖收集，这里手动收集
  */
 
 export function reactive(target) {

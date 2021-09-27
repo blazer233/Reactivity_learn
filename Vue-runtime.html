@@ -10,14 +10,43 @@
   <body>
     <div id="app"></div>
     <script>
-      const { reactive, effect } = Vue;
+      const { reactive, effect, ref, computed } = Vue;
       const observed = (window.observed = reactive({
         count: 0
       }));
-      let effectName = effect(() => {
+      const observed1 = (window.observed1 = reactive([1, 2, 3]));
+      effect(() => {
         console.log("observed.count is:", observed.count);
       });
-      console.log(effectName, effect);
+
+      effect(() => {
+        console.log(
+          `observed1  length is: ${observed1.length} , 4 is:${observed1[4]}`
+        );
+      });
+
+      const observed2 = (window.observed2 = reactive({
+        count1: 0,
+        count2: 10
+      }));
+
+      effect(() => {
+        effect(() => {
+          console.log("observed2 count2 is:", observed2.count2);
+        });
+        console.log("observed2 count1 is:", observed2.count1);
+      });
+
+      const foo = (window.foo = ref(1));
+      effect(() => {
+        console.log("foo: ", foo.value);
+      });
+
+      const calculate = (window.calculate = computed(() => {
+        //缓存计算的值，惰性计算
+        console.log("calculate c.value", foo.value * 2);
+        return foo.value * 2;
+      }));
     </script>
   </body>
 </html>
