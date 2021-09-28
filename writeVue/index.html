@@ -10,9 +10,8 @@
     <script type="module">
       import { reactive } from "./reactive.js";
       import { effect } from "./effect.js";
-      const observed = (window.observed = reactive([1, 2, 3]));
-      effect(() => console.log("observed[5]:", observed[5]));
-      effect(() => console.log("observed length:", observed.length));
+      const observed = (window.observed = reactive({ num: 3 }));
+      effect(() => console.log("observed:", observed.num));
     </script>
   </body>
 </html>

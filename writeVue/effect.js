@@ -1,4 +1,7 @@
 const targetMap = new WeakMap(); //依赖和副作用建立关系
+
+let activeEffect;
+
 /**
  *
  * target：reactive 返回的observed
@@ -10,10 +13,10 @@ const targetMap = new WeakMap(); //依赖和副作用建立关系
  *      [key]:new Set() [effect1,effect2...]
  *    }
  * }
- * 
- * 
+ *
+ *
  * const logCount = () => console.log(observed.count)
- * 
+ *
     function effect(fn) {
       const wrapped = () => {
         activeEffect = fn
@@ -28,15 +31,16 @@ const targetMap = new WeakMap(); //依赖和副作用建立关系
 
     logCount函数打印observed.count的值，通过包装，将logCount函数赋给activeEffect
     track时activeEffect被收集到key对应的Set中，当对象的key改变时再次触发activeEffect
-    即触发logCount
- * 
+    即触发logCount，所以effect接受的函数通过闭包先赋给activeEffect，当reactiveEffect执行时,
+    再执行effect的函数，如果函数中有调用被reactive后的对象，则触发track进行收集
+    将activeEffect保存到对应的key中，收集完成之后activeEffect清空
+ *
  */
-let activeEffect;
 export function effect(fn) {
   const reactiveEffect = () => {
     try {
-      activeEffect = reactiveEffect; //全局变量记录当前正在执行的用户副作用函数
-      return fn();
+      activeEffect = reactiveEffect; //全局变量记录当前正在执行的用户副作用函数(effect接受函数)
+      return fn(); //第一次执行用户副作用函数(effect接受函数)
     } finally {
       activeEffect = undefined;
     }

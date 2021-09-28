@@ -11,25 +11,28 @@
     <div id="app"></div>
     <script>
       const { reactive, effect, ref, computed } = Vue;
+
+      /*对象*/
       const observed = (window.observed = reactive({
         count: 0
       }));
+
+      /*数组*/
       const observed1 = (window.observed1 = reactive([1, 2, 3]));
       effect(() => {
         console.log("observed.count is:", observed.count);
       });
-
       effect(() => {
         console.log(
           `observed1  length is: ${observed1.length} , 4 is:${observed1[4]}`
         );
       });
 
+      /*嵌套*/
       const observed2 = (window.observed2 = reactive({
         count1: 0,
         count2: 10
       }));
-
       effect(() => {
         effect(() => {
           console.log("observed2 count2 is:", observed2.count2);
@@ -37,11 +40,13 @@
         console.log("observed2 count1 is:", observed2.count1);
       });
 
+      /*ref*/
       const foo = (window.foo = ref(1));
       effect(() => {
         console.log("foo: ", foo.value);
       });
 
+      /*computed*/
       const calculate = (window.calculate = computed(() => {
         //缓存计算的值，惰性计算
         console.log("calculate c.value", foo.value * 2);
