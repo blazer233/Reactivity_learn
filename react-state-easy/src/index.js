@@ -9,5 +9,4 @@ import "./clock/index.css";
 
 console.time("timer");
 ReactDOM.render(<AppClock />, document.getElementById("root"));
-
 console.timeEnd("timer");

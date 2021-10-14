@@ -6,8 +6,8 @@ const getFormattedTime = () => moment().format("hh:mm:ss A");
 const ReactApp = () => {
   const [date, setDate] = useState(getFormattedTime());
   useEffect(() => {
-    const interval = setInterval(() => setDate(getFormattedTime()), 1000);
-    return () => clearInterval(interval);
+    const id = setInterval(() => setDate(getFormattedTime()), 1000);
+    return () => clearInterval(id);
   }, []);
   return <div>{date}</div>;
 };
@@ -22,4 +22,4 @@ const ReactAppEasy = view(() => {
   return <div>{clock.time}</div>;
 });
 
-export default ReactAppEasy;
+export default ReactApp;
